@@ -8,8 +8,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
+
 @SpringBootTest
-public class JdbcOfficerDoaTest {
+public class JdbcOfficerDaoTest {
 
     @Autowired
     JdbcOfficerDao jdbcOfficerDao;

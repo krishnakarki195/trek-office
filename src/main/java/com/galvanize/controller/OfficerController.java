@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -35,10 +36,13 @@ public class OfficerController {
         jpaOfficerDao.deleteById(id);
     }
 
-//    @PatchMapping(path = "/officers/{id}")
-//    public Officer updateOfficerRankById(@PathVariable Long id,@RequestBody Rank rank) {
-//        return jpaOfficerDao.updateOfficerRankById(id,rank);
-//    }
+    @PatchMapping(path = "/officers/{id}")
+    public Officer updateOfficerRankById(@PathVariable Long id,@RequestBody String rank) {
+        Optional<Officer> optionalOfficer = jpaOfficerDao.findById(id);
+        Officer officer = optionalOfficer.get();
+        officer.setRank(Rank.valueOf(rank));
+        return jpaOfficerDao.save(officer);
+    }
 
 
 }

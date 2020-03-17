@@ -87,6 +87,7 @@ public class RestOfficerControllerTest {
         String officer = mapper.writeValueAsString(new Officer(Rank.CAPTAIN,"KK", "KK"));
         mvc.perform(post("/api/officers").content(officer).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(content().string(containsString("KK")))
                 .andDo(print());
     }
@@ -106,19 +107,20 @@ public class RestOfficerControllerTest {
                 .andExpect(jsonPath("$.length()",is(4)));
     }
 
-//    @Test
-//    public void updateOfficerTest() throws Exception {
-//        String url = "/api/officers/";
-//        MvcResult result = mvc.perform(get(url)
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andReturn();
-//        Integer id = JsonPath.parse(result.getResponse().getContentAsString()).read("$[0].id");
-//        url = url + id;
-//        mvc.perform(patch(url).contentType(MediaType.APPLICATION_JSON)
-//                .content(String.valueOf(Rank.ADMIRAL)))
-//                //.andExpect(status().isOk())
-//                //.andExpect(content().string(containsString("ADMIRAL")))
-//                .andDo(print());
-//    }
+    @Test
+    public void updateOfficerTest() throws Exception {
+        String url = "/api/officers/";
+        MvcResult result = mvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        Integer id = JsonPath.parse(result.getResponse().getContentAsString()).read("$[0].id");
+        url = url + id;
+        String body = "{ \"rank\":" + "\"" + String.valueOf(Rank.ADMIRAL) + "\"}";
+        mvc.perform(patch(url).contentType(MediaType.APPLICATION_JSON)
+                .content(Rank.ADMIRAL.name()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("ADMIRAL")))
+                .andDo(print());
+    }
 
 }

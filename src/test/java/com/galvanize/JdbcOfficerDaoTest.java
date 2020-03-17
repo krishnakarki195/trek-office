@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @SpringBootTest
+@Transactional // Use this to pub the db back way you started with after each test
 public class JdbcOfficerDaoTest {
 
     @Autowired
@@ -24,18 +26,25 @@ public class JdbcOfficerDaoTest {
 
     @Test
     public void findAllOfficersTest(){
-        assertNotNull(jdbcOfficerDao.findAll());
-        assertEquals(jdbcOfficerDao.findAll().size(),5);
+        // rlw - Although this works, you should take the result of find all, and perform your tests on that.
+//        assertNotNull(jdbcOfficerDao.findAll());
+//        assertEquals(jdbcOfficerDao.findAll().size(),5);
+
+        // rlw - like this...
+        List<Officer> officers = jdbcOfficerDao.findAll();
+        assertEquals(5, officers.size());
     }
 
     @Test
     public void officerExistsByIdTest(){
+        // rlw - findById should return an Optional<Officer>, then check isPresent() method
         assertNull(jdbcOfficerDao.findById(100L));
         assertNotNull(jdbcOfficerDao.findById(5L));
     }
 
     @Test
     public void createNewOfficerTest(){
+        // rlw - this is good
         Officer officer = jdbcOfficerDao.save(new Officer(Rank.CAPTAIN,"Michael", "Johnson"));
         assertEquals(officer.getFirstName(),"Michael");
         assertEquals(officer.getLastName(),"Johnson");
@@ -44,8 +53,11 @@ public class JdbcOfficerDaoTest {
 
     @Test
     public void deleteOfficerTest(){
-        assertEquals(jdbcOfficerDao.delete(5L), true);
-        assertEquals(jdbcOfficerDao.delete(100L), false);
+//        assertEquals(jdbcOfficerDao.delete(5L), true);
+//        assertEquals(jdbcOfficerDao.delete(100L), false);
+        // rlw - Better
+        assertTrue(jdbcOfficerDao.delete(5L));
+        assertFalse(jdbcOfficerDao.delete(100L));
     }
 
 

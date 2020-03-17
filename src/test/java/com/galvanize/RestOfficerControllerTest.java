@@ -36,16 +36,17 @@ public class RestOfficerControllerTest {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    @BeforeEach
-    public void setup() throws Exception {
+    @BeforeEach // Don't need to declare "throws" here.  Exception is never thrown.
+    public void setup() { //throws Exception {
         List<Officer> officerList = new ArrayList<>();
-
+        // rlw - again, setting up your own tests data is the RIGHT way to test
         officerList.add(new Officer(Rank.CAPTAIN,"Krishna", "Karki"));
         officerList.add(new Officer(Rank.ENSIGN,"Mark", "Laco"));
         officerList.add(new Officer(Rank.COMMANDER,"Mike", "Cole"));
         officerList.add(new Officer(Rank.ADMIRAL,"Kirk", "Colmen"));
         officerList.add(new Officer(Rank.COMMODORE,"Michael", "Johnson"));
 
+        // rlw - Functional java in action!  Great job!
         officerList.forEach( officer -> {
             try {
                 mvc.perform(post("/api/officers")
@@ -115,7 +116,10 @@ public class RestOfficerControllerTest {
                 .andReturn();
         Integer id = JsonPath.parse(result.getResponse().getContentAsString()).read("$[0].id");
         url = url + id;
-        String body = "{ \"rank\":" + "\"" + String.valueOf(Rank.ADMIRAL) + "\"}";
+        // rlw - Don't need the String.valueOf here.  Rank's toString() will take care of it you could call
+        // Rank.ADMRIAL.toString if you wanted to be explicit, but it's not necessary
+        // String body = "{ \"rank\":" + "\"" + String.valueOf(Rank.ADMIRAL) + "\"}";
+        String body = "{ \"rank\":" + "\"" + Rank.ADMIRAL + "\"}";
         mvc.perform(patch(url).contentType(MediaType.APPLICATION_JSON)
                 .content(Rank.ADMIRAL.name()))
                 .andExpect(status().isOk())
